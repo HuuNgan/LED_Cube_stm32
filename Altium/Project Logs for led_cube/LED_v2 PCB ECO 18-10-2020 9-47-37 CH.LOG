@@ -1,0 +1,19 @@
+Removed Pin From Net: NetName=NetBluePill_18 Pin=BluePill-18
+Removed Pin From Net: NetName=NetBluePill_20 Pin=BluePill-20
+Removed Pin From Net: NetName=NetBluePill_25 Pin=BluePill-25
+Removed Pin From Net: NetName=LAYER_LATCH Pin=BluePill-29
+Removed Pin From Net: NetName=CLOCK Pin=BluePill-30
+Removed Pin From Net: NetName=DATA_LATCH Pin=BluePill-31
+Removed Pin From Net: NetName=MOSI Pin=BluePill-32
+Removed Pin From Net: NetName=GND Pin=BluePill-40
+Added Component: Designator=BluePill(BluePill)
+Add component. Clean all parameters for all variants
+Added Pin To Net: NetName=NetBluePill_18 Pin=BluePill-18
+Added Pin To Net: NetName=NetBluePill_20 Pin=BluePill-20
+Added Pin To Net: NetName=NetBluePill_25 Pin=BluePill-25
+Added Pin To Net: NetName=LAYER_LATCH Pin=BluePill-29
+Added Pin To Net: NetName=CLOCK Pin=BluePill-30
+Added Pin To Net: NetName=DATA_LATCH Pin=BluePill-31
+Added Pin To Net: NetName=MOSI Pin=BluePill-32
+Added Pin To Net: NetName=GND Pin=BluePill-40
+Added Room: Name=LED_v2
