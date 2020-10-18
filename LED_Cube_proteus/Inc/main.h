@@ -58,8 +58,10 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define LATCH_Pin_Pin GPIO_PIN_6
-#define LATCH_Pin_GPIO_Port GPIOA
+#define DATA_LATCH_Pin GPIO_PIN_6
+#define DATA_LATCH_GPIO_Port GPIOA
+#define LAYER_LATCH_Pin GPIO_PIN_8
+#define LAYER_LATCH_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

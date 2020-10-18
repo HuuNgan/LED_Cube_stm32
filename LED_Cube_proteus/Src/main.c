@@ -53,13 +53,16 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
+void Scan_LED(void);
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t spi_Data[2] = {0xAA, 0x0F};
-int i;
+uint8_t LAYER_Data[1] = {0xFE};
+uint8_t LED_Data[8] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
+uint8_t Matrix_Data[8] = {0x0f, 0x11, 0x11, 0x0f, 0x0f, 0x11, 0x11, 0x0f};
+uint8_t Side_Enable[8] = {0, 1, 0, 1, 0, 1, 0, 1};
 
 /* USER CODE END 0 */
 
@@ -94,10 +97,15 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-  //SPI_Write operation
-  HAL_SPI_Transmit(&hspi1, spi_Data, 2, 10);
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+//  HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+//  HAL_Delay(10);
+//
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+//  HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+//  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+//  HAL_Delay(1000);
 
   /* USER CODE END 2 */
 
@@ -105,40 +113,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  for(spi_Data[0]=0; spi_Data[0]<255; spi_Data[0]++)
-//	  {
-//		  HAL_Delay(50);
-//		  //SPI_Write operation
-//		  HAL_SPI_Transmit(&hspi1, spi_Data, 1, 10);
-//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//		  HAL_Delay(10);
-//		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//	  }
-//	  for(i=0; i<5; i++)
-//	  {
-//		  uint8_t k;
-//		  spi_Data[0]=0xFF;
-//		  for(k=0; k<9;k++)
-//		  {
-//			  HAL_SPI_Transmit(&hspi1, spi_Data, 1, 10);
-//			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//			  HAL_Delay(10);
-//			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//			  HAL_Delay(200);
-//			  spi_Data[0] = spi_Data[0]<<1;
-//		  }
-//
-//		  spi_Data[0] = 0x80;
-//		  for(k=0; k<9;k++)
-//		  {
-//			  HAL_SPI_Transmit(&hspi1, spi_Data, 1, 10);
-//			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
-//			  HAL_Delay(10);
-//			  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
-//			  HAL_Delay(200);
-//			  spi_Data[0] = spi_Data[0]>>1;
-//		  }
-//	  }
+	  Scan_LED();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -231,18 +206,42 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LATCH_Pin_GPIO_Port, LATCH_Pin_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, DATA_LATCH_Pin|LAYER_LATCH_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : LATCH_Pin_Pin */
-  GPIO_InitStruct.Pin = LATCH_Pin_Pin;
+  /*Configure GPIO pins : DATA_LATCH_Pin LAYER_LATCH_Pin */
+  GPIO_InitStruct.Pin = DATA_LATCH_Pin|LAYER_LATCH_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LATCH_Pin_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
+void Scan_LED(void)
+{
+	uint8_t temp = 1;
+	uint8_t i;
+	uint8_t k;
+	for(i=0;i<8;i++)
+	{
+		LAYER_Data[0] = ~temp;
+		for(k=0;k<8;k++)
+		{
+			LED_Data[k] = Matrix_Data[i]*Side_Enable[k];
+		}
+
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+
+		//HAL_Delay(10);
+		temp = temp << 1;
+	}
+}
 
 /* USER CODE END 4 */
 
