@@ -1,0 +1,3 @@
+Layer Pairs Export File for PCB: D:\HN DATA\ST\LED_Cube_stm32\Altium\LED_v2.pcbdoc
+LayersSetName=Top_Bot_Thru_Holes|DrillFile=led_v2-roundholes.txt|DrillLayers=gtl,gbl
+LayersSetName=Top_Bot_Slot_Holes|DrillFile=led_v2-slotholes.txt|DrillLayers=gtl,gbl
