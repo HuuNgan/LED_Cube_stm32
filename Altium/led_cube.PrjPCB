@@ -71,6 +71,40 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=XQSKLFGJ
 
+[Document3]
+DocumentPath=base_led_cube.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=JTHNBHEK
+
+[Document4]
+DocumentPath=base_led_cube.PcbDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=BCQCHBJI
+
 [GeneratedDocument1]
 DocumentPath=Project Outputs for led_cube\Design Rule Check - LED_v2 (1).html
 DItemRevisionGUID=
@@ -96,74 +130,10 @@ DocumentPath=Project Outputs for led_cube\LED_v2.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for led_cube\LED_v2.GBL
-DItemRevisionGUID=
-
-[GeneratedDocument8]
-DocumentPath=Project Outputs for led_cube\LED_v2.GBO
-DItemRevisionGUID=
-
-[GeneratedDocument9]
-DocumentPath=Project Outputs for led_cube\LED_v2.GBP
-DItemRevisionGUID=
-
-[GeneratedDocument10]
-DocumentPath=Project Outputs for led_cube\LED_v2.GBS
-DItemRevisionGUID=
-
-[GeneratedDocument11]
-DocumentPath=Project Outputs for led_cube\LED_v2.GKO
-DItemRevisionGUID=
-
-[GeneratedDocument12]
-DocumentPath=Project Outputs for led_cube\LED_v2.GM1
-DItemRevisionGUID=
-
-[GeneratedDocument13]
-DocumentPath=Project Outputs for led_cube\LED_v2.GM13
-DItemRevisionGUID=
-
-[GeneratedDocument14]
-DocumentPath=Project Outputs for led_cube\LED_v2.GM14
-DItemRevisionGUID=
-
-[GeneratedDocument15]
-DocumentPath=Project Outputs for led_cube\LED_v2.GM15
-DItemRevisionGUID=
-
-[GeneratedDocument16]
-DocumentPath=Project Outputs for led_cube\LED_v2.GPB
-DItemRevisionGUID=
-
-[GeneratedDocument17]
-DocumentPath=Project Outputs for led_cube\LED_v2.GPT
-DItemRevisionGUID=
-
-[GeneratedDocument18]
-DocumentPath=Project Outputs for led_cube\LED_v2.GTL
-DItemRevisionGUID=
-
-[GeneratedDocument19]
-DocumentPath=Project Outputs for led_cube\LED_v2.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument20]
-DocumentPath=Project Outputs for led_cube\LED_v2.GTP
-DItemRevisionGUID=
-
-[GeneratedDocument21]
-DocumentPath=Project Outputs for led_cube\LED_v2.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument22]
 DocumentPath=Project Outputs for led_cube\LED_v2.LDP
 DItemRevisionGUID=
 
-[GeneratedDocument23]
-DocumentPath=Project Outputs for led_cube\LED_v2.REP
-DItemRevisionGUID=
-
-[GeneratedDocument24]
+[GeneratedDocument8]
 DocumentPath=Project Outputs for led_cube\LED_v2.RUL
 DItemRevisionGUID=
 

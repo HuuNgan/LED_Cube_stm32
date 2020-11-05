@@ -1,4 +1,0 @@
-Change Component Designator: OldDesignator=BluePill NewDesignator=*1
-Change Component Designator: OldDesignator=BTN1 NewDesignator=SW1
-Added Member To Class: ClassName=LED_v2 Member=Component *1 BluePill
-Added Room: Name=LED_v2
