@@ -54,6 +54,7 @@ static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 void Scan_LED(void);
+void effect1(void);
 
 /* USER CODE END PFP */
 
@@ -113,7 +114,8 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  Scan_LED();
+//	  Scan_LED();
+	  effect1();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -239,6 +241,35 @@ void Scan_LED(void)
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 
 		//HAL_Delay(10);
+		temp = temp << 1;
+	}
+}
+
+void effect1(void)
+{
+	uint8_t temp=1;
+	uint8_t i;
+
+	LED_Data[0] = 0xff;
+	LED_Data[1] = 0x81;
+	LED_Data[2] = 0x81;
+	LED_Data[3] = 0x81;
+	LED_Data[4] = 0x81;
+	LED_Data[5] = 0x81;
+	LED_Data[6] = 0x81;
+	LED_Data[7] = 0xff;
+
+	for(i=0;i<8;i++)
+	{
+		LAYER_Data[0] = ~temp;
+
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+
 		temp = temp << 1;
 	}
 }
