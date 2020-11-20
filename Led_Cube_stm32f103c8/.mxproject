@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=D:/HN DATA/ST/STM32 projects/Led_Cube_stm32f103c8/Inc
+HeaderPath=D:/HN DATA/ST/LED_Cube_stm32/Led_Cube_stm32f103c8/Inc
 HeaderFiles=stm32f1xx_it.h;stm32f1xx_hal_conf.h;main.h;
-SourcePath=D:/HN DATA/ST/STM32 projects/Led_Cube_stm32f103c8/Src
+SourcePath=D:/HN DATA/ST/LED_Cube_stm32/Led_Cube_stm32f103c8/Src
 SourceFiles=stm32f1xx_it.c;stm32f1xx_hal_msp.c;main.c;
 
 [PreviousLibFiles]

@@ -45,6 +45,7 @@
 SPI_HandleTypeDef hspi1;
 
 /* USER CODE BEGIN PV */
+uint8_t mode;
 
 /* USER CODE END PV */
 
@@ -65,7 +66,7 @@ void effect2(void);
 uint8_t LAYER_Data[1] = {0xFE};
 uint8_t LED_Reset_Data[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 uint8_t LED_Data[8] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
-uint8_t Matrix_Data[8] = {0x0f, 0x11, 0x11, 0x0f, 0x0f, 0x11, 0x11, 0x0f};
+uint8_t Matrix_Data[8] = {0x18, 0x3c, 0x66, 0x66, 0x7E, 0x7E, 0x66, 0x66};
 uint8_t Side_Enable[8] = {0, 1, 0, 1, 0, 1, 0, 1};
 
 /* USER CODE END 0 */
@@ -109,8 +110,29 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-//	  Scan_LED();
-	  effect2();
+	  switch(mode)
+	  {
+	  	  case 0:
+	  	  {
+	  		  Scan_LED();
+	  		  break;
+	  	  }
+	  	  case 1:
+	  	  {
+	  		  effect1();
+	  		  break;
+	  	  }
+	  	  case 2:
+	  	  {
+	  		  effect2();
+	  		  break;
+	  	  }
+	  	  default:
+	  	  {
+	  		  Scan_LED();
+	  		  break;
+	  	  }
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -200,14 +222,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, LayerLatch_Pin|DataLatch_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
   /*Configure GPIO pin : Button_Pin */
   GPIO_InitStruct.Pin = Button_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Button_GPIO_Port, &GPIO_InitStruct);
 
@@ -217,6 +250,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
 }
 
@@ -256,8 +293,10 @@ void Scan_LED(void)
 		LAYER_Data[0] = ~temp;
 		for(k=0;k<8;k++)
 		{
-			LED_Data[k] = Matrix_Data[i]*Side_Enable[k];
+			LED_Data[k] = 0xFF;
 		}
+
+		LED_Data[0] = ~Matrix_Data[i];
 
 		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
 		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
@@ -266,7 +305,7 @@ void Scan_LED(void)
 		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
 		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
 
-		//HAL_Delay(10);
+		HAL_Delay(1);
 		temp = temp << 1;
 	}
 }
@@ -281,7 +320,7 @@ void effect1(void)
 		LAYER_Data[0] = ~temp;
 
 		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 100);
+		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
 		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
 		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
@@ -297,14 +336,14 @@ void effect2(void)
 	uint8_t temp=1;
 	uint8_t i;
 
-	LED_Data[0] = 0xff;
-	LED_Data[1] = 0x81;
-	LED_Data[2] = 0x81;
-	LED_Data[3] = 0x81;
-	LED_Data[4] = 0x81;
-	LED_Data[5] = 0x81;
-	LED_Data[6] = 0x81;
-	LED_Data[7] = 0xff;
+	LED_Data[0] = 0x00;
+	LED_Data[1] = 0x7E;
+	LED_Data[2] = 0x7E;
+	LED_Data[3] = 0x7E;
+	LED_Data[4] = 0x7E;
+	LED_Data[5] = 0x7E;
+	LED_Data[6] = 0x7E;
+	LED_Data[7] = 0x00;
 
 	for(i=0;i<8;i++)
 	{
@@ -318,6 +357,7 @@ void effect2(void)
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
 
 		temp = temp << 1;
+		HAL_Delay(100);
 	}
 }
 
