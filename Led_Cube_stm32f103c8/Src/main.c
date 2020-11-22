@@ -21,9 +21,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "stdlib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,20 +55,33 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
-void Scan_LED(void);
-void LED_Reset(void);
-void effect1(void);
-void effect2(void);
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t LAYER_Data[1] = {0xFE};
-uint8_t LED_Reset_Data[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+#define loop_time	5
+
+void LED_Reset(void);
+void scan_led(int delay_time);
+void shift(void);
+void cube_data_reset(void);
+void effect1(void);
+void effect2(void);
+void effect3(void);
+void effect4(void);
+void effect5(void);
+void effect6(void);
+void effect7(void);
+void effect8(void);
+
+uint8_t LAYER_Data[1] = {0xFF};
 uint8_t LED_Data[8] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
 uint8_t Matrix_Data[8] = {0x18, 0x3c, 0x66, 0x66, 0x7E, 0x7E, 0x66, 0x66};
-uint8_t Side_Enable[8] = {0, 1, 0, 1, 0, 1, 0, 1};
+uint8_t cube_data[8][8];
+
+//uint8_t LED_Reset_Data[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+//uint8_t Side_Enable[8] = {0, 1, 0, 1, 0, 1, 0, 1};
 
 /* USER CODE END 0 */
 
@@ -103,6 +117,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   LED_Reset();
+  HAL_Delay(1000);
 
   /* USER CODE END 2 */
 
@@ -114,7 +129,26 @@ int main(void)
 	  {
 	  	  case 0:
 	  	  {
-	  		  Scan_LED();
+//	  		  uint8_t count = 0;
+//	  		  for(count = 0; count < loop_time; count++)
+//	  		  {
+//	  			  effect1();
+//	  		  }
+//	  		  for(count = 0; count < loop_time; count++)
+//	  		  {
+//	  			  effect2();
+//	  		  }
+//	  		  for(count = 0; count < loop_time; count++)
+//	  		  {
+//	  			  effect3();
+//	  		  }
+//	  		  for(count = 0; count < loop_time; count++)
+//	  		  {
+//	  			  effect4();
+//	  		  }
+
+	  		  effect8();
+
 	  		  break;
 	  	  }
 	  	  case 1:
@@ -127,9 +161,34 @@ int main(void)
 	  		  effect2();
 	  		  break;
 	  	  }
+	  	  case 3:
+	  	  {
+	  		  effect3();
+	  		  break;
+	  	  }
+	  	  case 4:
+	  	  {
+	  		  effect4();
+	  		  break;
+	  	  }
+	  	  case 5:
+	  	  {
+	  		  effect5();
+	  		  break;
+	  	  }
+	  	  case 6:
+	  	  {
+	  		  effect6();
+	  		  break;
+	  	  }
+	  	  case 7:
+	  	  {
+	  		  effect7();
+	  		  break;
+	  	  }
 	  	  default:
 	  	  {
-	  		  Scan_LED();
+	  		  effect1();
 	  		  break;
 	  	  }
 	  }
@@ -280,10 +339,62 @@ void LED_Reset(void)
 	HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
 	HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
-	HAL_Delay(1000);
 }
 
-void Scan_LED(void)
+void scan_led(int delay_time)
+{
+	uint8_t temp=1;
+	uint8_t i;
+	uint8_t k;
+
+	for(i=0;i<8;i++)
+	{
+		for(k=0; k<8; k++)
+		{
+			LED_Data[k] = cube_data[i][k];
+		}
+
+		LAYER_Data[0] = ~temp;
+
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
+
+		temp = temp << 1;
+		HAL_Delay(delay_time);
+	}
+}
+
+void shift(void)
+{
+	uint8_t i;
+	uint8_t j;
+	for(i=7; i>0; i--)
+	{
+		for(j=0; j<8; j++)
+		{
+			cube_data[i][j] = cube_data[i-1][j];
+		}
+	}
+}
+
+void cube_data_reset(void)
+{
+	uint8_t i;
+	uint8_t j;
+	for(i=0; i<8; i++)
+	{
+		for (j=0; j<8; j++)
+		{
+			cube_data[i][j] = 0xFF;
+		}
+	}
+}
+
+void effect1(void)
 {
 	uint8_t temp = 1;
 	uint8_t i;
@@ -305,32 +416,12 @@ void Scan_LED(void)
 		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
 		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
 
-		HAL_Delay(1);
+		HAL_Delay(0);
 		temp = temp << 1;
 	}
 }
 
-void effect1(void)
-{
-	uint8_t temp = 1;
-	uint8_t i;
-
-	for(i=0;i<8;i++)
-	{
-		LAYER_Data[0] = ~temp;
-
-		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
-		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
-		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
-
-		HAL_Delay(100);
-		temp = temp << 1;
-	}
-}
-
+//hinh vuong chay
 void effect2(void)
 {
 	uint8_t temp=1;
@@ -358,6 +449,164 @@ void effect2(void)
 
 		temp = temp << 1;
 		HAL_Delay(100);
+	}
+}
+
+//rain fall 1
+void effect3(void)
+{
+	uint8_t temp = 1;
+	uint8_t i;
+	uint8_t k;
+
+	for(i=0;i<8;i++)
+	{
+		//random value from 1 to 8 by rand()%(maxN + 1 - minN)
+		for(k=0; k<8; k++)
+		{
+			LED_Data[k] = 1;
+			LED_Data[k] = LED_Data[k] << rand()%8;
+			LED_Data[k] = ~LED_Data[k];
+		}
+		LAYER_Data[0] = ~temp;
+
+		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
+
+		HAL_Delay(100);
+		temp = temp << 1;
+	}
+}
+
+//rain fall 2
+void effect4(void)
+{
+	uint8_t temp = 1;
+	uint8_t i;
+	uint8_t k;
+
+	//random value from 1 to 8 by rand()%(maxN + 1 - minN)
+	for(k=0; k<8; k++)
+	{
+		LED_Data[k] = 1;
+		LED_Data[k] = LED_Data[k] << rand()%8;
+		if(k>0)
+		{
+			while(LED_Data[k] == (~LED_Data[k-1]))
+			{
+				LED_Data[k] = 1;
+				LED_Data[k] = LED_Data[k] << rand()%8;
+			}
+		}
+
+		LED_Data[k] = ~LED_Data[k];
+	}
+
+	HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
+	HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
+	HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_SET);
+
+	for(i=0;i<10;i++)
+	{
+		LAYER_Data[0] = ~temp;
+		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
+		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
+		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
+		HAL_Delay(90);
+		temp = temp << 1;
+		if((i==0) | (i==1))	temp = temp|0x01;
+	}
+}
+
+void effect5(void)
+{
+	uint8_t i;
+	uint8_t j;
+
+	for(i=0; i<8; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if(((i==0) || (i==7)) && ((j==0) || (j==7)))	cube_data[i][j] = 0x00;
+			else if ((i>0) && (i<7) && (j>0) && (j<7))	cube_data[i][j] = 0xFF;
+			else cube_data[i][j] = 0x7E;
+		}
+	}
+	scan_led(0);
+}
+
+void effect6(void)
+{
+	uint8_t i;
+	uint8_t j;
+	for(i=0;i<8;i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if(j==0 || j==7)		cube_data[i][j] = 0x00;
+			else	cube_data[i][j] = 0x7E;
+		}
+	}
+	scan_led(0);
+}
+
+//rain fall 3
+void effect7(void)
+{
+	uint8_t count=20;
+	uint8_t i;
+	uint8_t k;
+	LED_Reset();
+
+	for(i=0; i<8; i++)
+	{
+		for(k=0; k<8; k++)
+		{
+			if(i==0)
+			{
+				cube_data[i][k] = 1;
+				cube_data[i][k] = cube_data[i][k] << rand()%8;
+
+				cube_data[i][k] = ~cube_data[i][k];
+			}
+//			else if(i>0 && i<4)	cube_data[i][k] = cube_data[i-1][k];
+		}
+	}
+	while(count--)
+	{
+		scan_led(0);
+	}
+	shift();
+}
+
+void effect8(void)
+{
+	uint8_t i;
+	uint8_t j;
+	uint8_t delay;
+	for(i=0; i<8; i++)
+	{
+		delay = 10;
+		if(i<4) j=i;
+		else	j=8-i;
+		cube_data_reset();
+		cube_data[0][j] = 0xFF;
+		cube_data[1][j] = 0x93;
+		cube_data[2][j] = 0x01;
+		cube_data[3][j] = 0x01;
+		cube_data[4][j] = 0x01;
+		cube_data[5][j] = 0x83;
+		cube_data[6][j] = 0xC7;
+		cube_data[7][j] = 0xEF;
+
+		while(delay--)
+		{
+			scan_led(0);
+		}
 	}
 }
 
