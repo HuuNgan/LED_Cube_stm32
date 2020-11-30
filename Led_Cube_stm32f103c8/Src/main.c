@@ -60,7 +60,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define loop_time	5
+#define loop_time	20
 
 void LED_Reset(void);
 void scan_led(int delay_time);
@@ -129,25 +129,47 @@ int main(void)
 	  {
 	  	  case 0:
 	  	  {
-//	  		  uint8_t count = 0;
-//	  		  for(count = 0; count < loop_time; count++)
-//	  		  {
-//	  			  effect1();
-//	  		  }
-//	  		  for(count = 0; count < loop_time; count++)
-//	  		  {
-//	  			  effect2();
-//	  		  }
-//	  		  for(count = 0; count < loop_time; count++)
-//	  		  {
-//	  			  effect3();
-//	  		  }
-//	  		  for(count = 0; count < loop_time; count++)
-//	  		  {
-//	  			  effect4();
-//	  		  }
-
-	  		  effect8();
+	  		  uint8_t count = 0;
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect1();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect2();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect3();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect4();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect5();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect6();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect7();
+	  		  }
+	  		  for(count = 0; count < loop_time; count++)
+	  		  {
+	  			  if(mode != 0) break;
+	  			  effect8();
+	  		  }
 
 	  		  break;
 	  	  }
@@ -184,6 +206,11 @@ int main(void)
 	  	  case 7:
 	  	  {
 	  		  effect7();
+	  		  break;
+	  	  }
+	  	  case 8:
+	  	  {
+	  		  effect8();
 	  		  break;
 	  	  }
 	  	  default:
