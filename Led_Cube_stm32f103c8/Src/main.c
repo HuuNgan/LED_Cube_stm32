@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stdlib.h"
@@ -60,7 +59,7 @@ static void MX_SPI1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define loop_time	20
+#define loop_time	5
 
 void LED_Reset(void);
 void scan_led(int delay_time);
@@ -74,10 +73,12 @@ void effect5(void);
 void effect6(void);
 void effect7(void);
 void effect8(void);
+void effect9(void);
 
 uint8_t LAYER_Data[1] = {0xFF};
 uint8_t LED_Data[8] = {0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA};
-uint8_t Matrix_Data[8] = {0x18, 0x3c, 0x66, 0x66, 0x7E, 0x7E, 0x66, 0x66};
+uint8_t Matrix_Data[8];
+uint8_t A_character[8] = {0x18, 0x3c, 0x66, 0x66, 0x7E, 0x7E, 0x66, 0x66};
 uint8_t cube_data[8][8];
 
 //uint8_t LED_Reset_Data[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
@@ -129,7 +130,7 @@ int main(void)
 	  {
 	  	  case 0:
 	  	  {
-	  		  uint8_t count = 0;
+	  		  uint16_t count = 0;
 	  		  for(count = 0; count < loop_time; count++)
 	  		  {
 	  			  if(mode != 0) break;
@@ -150,17 +151,17 @@ int main(void)
 	  			  if(mode != 0) break;
 	  			  effect4();
 	  		  }
-	  		  for(count = 0; count < loop_time; count++)
+	  		  for(count = 0; count < loop_time*10; count++)
 	  		  {
 	  			  if(mode != 0) break;
 	  			  effect5();
 	  		  }
-	  		  for(count = 0; count < loop_time; count++)
+	  		  for(count = 0; count < loop_time*50; count++)
 	  		  {
 	  			  if(mode != 0) break;
 	  			  effect6();
 	  		  }
-	  		  for(count = 0; count < loop_time; count++)
+	  		  for(count = 0; count < loop_time*50; count++)
 	  		  {
 	  			  if(mode != 0) break;
 	  			  effect7();
@@ -170,6 +171,7 @@ int main(void)
 	  			  if(mode != 0) break;
 	  			  effect8();
 	  		  }
+	  		  effect9();
 
 	  		  break;
 	  	  }
@@ -213,6 +215,11 @@ int main(void)
 	  		  effect8();
 	  		  break;
 	  	  }
+	  	  case 9:
+	  	  {
+	  		  effect9();
+	  		  break;
+	  	  }
 	  	  default:
 	  	  {
 	  		  effect1();
@@ -237,10 +244,13 @@ void SystemClock_Config(void)
 
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -249,12 +259,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -283,7 +293,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -309,6 +319,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
@@ -423,28 +434,25 @@ void cube_data_reset(void)
 
 void effect1(void)
 {
-	uint8_t temp = 1;
 	uint8_t i;
+	uint8_t j;
+	uint8_t delay;
 	uint8_t k;
-	for(i=0;i<8;i++)
+	for(i=0; i<14; i++)
 	{
-		LAYER_Data[0] = ~temp;
-		for(k=0;k<8;k++)
+		delay = 10;
+		if(i<7 ) j=i;
+		else	j=14-i;
+		cube_data_reset();
+		for(k=0; k<8; k++)
 		{
-			LED_Data[k] = 0xFF;
+			cube_data[k][j] = ~A_character[k];
 		}
-
-		LED_Data[0] = ~Matrix_Data[i];
-
-		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi1, LED_Data, 8, 10);
-		HAL_GPIO_WritePin(DataLatch_GPIO_Port, DataLatch_Pin, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_RESET);
-		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
-		HAL_GPIO_WritePin(LayerLatch_GPIO_Port, LayerLatch_Pin, GPIO_PIN_SET);
-
-		HAL_Delay(0);
-		temp = temp << 1;
+		while(delay--)
+		{
+			if(mode != 1 && mode !=0) break;
+		    scan_led(0);
+		}
 	}
 }
 
@@ -463,8 +471,9 @@ void effect2(void)
 	LED_Data[6] = 0x7E;
 	LED_Data[7] = 0x00;
 
-	for(i=0;i<8;i++)
+	for(i=0;i<14;i++)
 	{
+		if(mode != 2 && mode != 0) break;
 		LAYER_Data[0] = ~temp;
 
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_6, GPIO_PIN_RESET);
@@ -474,7 +483,8 @@ void effect2(void)
 		HAL_SPI_Transmit(&hspi1, LAYER_Data, 1, 10);
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_SET);
 
-		temp = temp << 1;
+		if(i<7)	   temp = temp << 1;
+		else    temp = temp >> 1;
 		HAL_Delay(100);
 	}
 }
@@ -488,6 +498,7 @@ void effect3(void)
 
 	for(i=0;i<8;i++)
 	{
+		if(mode != 3 && mode != 0) break;
 		//random value from 1 to 8 by rand()%(maxN + 1 - minN)
 		for(k=0; k<8; k++)
 		{
@@ -519,6 +530,7 @@ void effect4(void)
 	//random value from 1 to 8 by rand()%(maxN + 1 - minN)
 	for(k=0; k<8; k++)
 	{
+		if(mode != 4 && mode != 0) break;
 		LED_Data[k] = 1;
 		LED_Data[k] = LED_Data[k] << rand()%8;
 		if(k>0)
@@ -549,40 +561,8 @@ void effect4(void)
 	}
 }
 
-void effect5(void)
-{
-	uint8_t i;
-	uint8_t j;
-
-	for(i=0; i<8; i++)
-	{
-		for(j=0; j<8; j++)
-		{
-			if(((i==0) || (i==7)) && ((j==0) || (j==7)))	cube_data[i][j] = 0x00;
-			else if ((i>0) && (i<7) && (j>0) && (j<7))	cube_data[i][j] = 0xFF;
-			else cube_data[i][j] = 0x7E;
-		}
-	}
-	scan_led(0);
-}
-
-void effect6(void)
-{
-	uint8_t i;
-	uint8_t j;
-	for(i=0;i<8;i++)
-	{
-		for(j=0; j<8; j++)
-		{
-			if(j==0 || j==7)		cube_data[i][j] = 0x00;
-			else	cube_data[i][j] = 0x7E;
-		}
-	}
-	scan_led(0);
-}
-
 //rain fall 3
-void effect7(void)
+void effect5(void)
 {
 	uint8_t count=20;
 	uint8_t i;
@@ -605,9 +585,42 @@ void effect7(void)
 	}
 	while(count--)
 	{
+		if(mode != 5 && mode != 0) break;
 		scan_led(0);
 	}
 	shift();
+}
+
+void effect6(void)
+{
+	uint8_t i;
+	uint8_t j;
+	for(i=0;i<8;i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if(j==0 || j==7)		cube_data[i][j] = 0x00;
+			else	cube_data[i][j] = 0x7E;
+		}
+	}
+	scan_led(0);
+}
+
+void effect7(void)
+{
+	uint8_t i;
+	uint8_t j;
+
+	for(i=0; i<8; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if(((i==0) || (i==7)) && ((j==0) || (j==7)))	cube_data[i][j] = 0x00;
+			else if ((i>0) && (i<7) && (j>0) && (j<7))	cube_data[i][j] = 0xFF;
+			else cube_data[i][j] = 0x7E;
+		}
+	}
+	scan_led(0);
 }
 
 void effect8(void)
@@ -632,7 +645,63 @@ void effect8(void)
 
 		while(delay--)
 		{
+			if(mode != 8) break;
 			scan_led(0);
+		}
+	}
+}
+
+void effect9(void)
+{
+	uint8_t i,j;
+	uint8_t delay;
+	uint8_t loop = 100;
+
+//	uint8_t i_exist[8] = {0,0,0,0,0,0,0,0};
+//	uint8_t j_exist[8] = {0,0,0,0,0,0,0,0};
+
+	for(i=0; i<8; i++)
+	{
+		for(j=0; j<8; j++)
+		{
+			if(i==0) cube_data[i][j] = 0x00;
+			else cube_data[i][j] = 0xFF;
+		}
+	}
+
+	while(loop--)
+	{
+		if(mode != 9 && mode != 0) break;
+//		uint8_t random_loop = 1;
+		for(i=0; i<8; i++) Matrix_Data[i] = 0x00;
+
+//		random:
+//			i = rand()%8;
+//			j = rand()%8;
+//			if(i_exist[i]==0 || j_exist[j]==0)
+//			{
+//				i_exist[i] = 1;
+//				j_exist[j] = 1;
+//			}
+//			else
+//			{
+//				goto random;
+//			}
+		i = rand()%8;
+		j = rand()%8;
+
+		Matrix_Data[i] |= (0x01 << j);
+
+		for(i=1; i<8; i++)
+		{
+			for(j=0; j<8; j++)
+			{
+				if(i==7) cube_data[i][j] &= ~Matrix_Data[j];
+				else    cube_data[i][j] = ~Matrix_Data[j];
+			    cube_data[i-1][j] |= Matrix_Data[j];
+			}
+			delay = 3;
+			while(delay--)    scan_led(0);
 		}
 	}
 }

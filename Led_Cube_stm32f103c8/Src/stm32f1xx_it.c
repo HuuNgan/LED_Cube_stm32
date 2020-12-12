@@ -204,9 +204,9 @@ void SysTick_Handler(void)
 void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
-	uint8_t i = 100;
+	uint16_t i = 0xFFFF;
 	while(i--);
-	if(mode >= 8)	mode = 0;
+	if(mode >= 9)	mode = 0;
 	else	mode++;
 	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 
